@@ -21,7 +21,7 @@
 # ----------------------------------------------------------------------
 
 use Getopt::Std;
-getopts('bd:fhmp:r:t:');
+getopts('bd:fhmp:r:t:c:');
 
 # -- define known hardware types
 my @rocok = ("digv2", "digv21", "digv21respin");
@@ -30,6 +30,11 @@ my @tbmok = ("TBM08", "TBM08B", "TBM08B_FPIX", "TBM09");
 if ($opt_h) {
     &printHelp;
     exit(0);
+}
+#CS -- choose DTB for testing 4 modules at the same time
+my $dtb = "*";
+if ($opt_c){
+    $dtb = $opt_c;
 }
 
 # -- create directory or if existing, remove all config files from the old one
@@ -330,7 +335,7 @@ sub printConfigParameters {
     my $VD = "2.600"; 
     open(FH, ">$file") || die "cannot open $file\n";
     print FH <<"EOF";
-testboardName *
+testboardName $dtb
 
 -- parameter files
 
