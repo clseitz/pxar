@@ -251,7 +251,7 @@ sub setDacs {
 	$dacs .= " 17 phoffset   170\n";
 	$dacs .= " 19 vcomp_adc  50 \n";
 	$dacs .= " 20 phscale    130\n";
-	$dacs .= " 22 vicolor    10\n";
+	$dacs .= " 22 vicolor    50\n";
 	$dacs .= " 25 vcal       200\n";
 	$dacs .= " 26 caldel     96 \n";
 	$dacs .= "253 ctrlreg    0  \n";
@@ -316,8 +316,6 @@ sub setRbCals {
 	$rbCals .= "par1tbia 1.\n";
 	$rbCals .= "par2tbia 1.\n";
 }
-
-
 
 # ----------------------------------------------------------------------
 sub cleanFiles {
@@ -655,10 +653,7 @@ saveparameters      button
 EOF
 } 
 
-
 close(FH);
-
-
     
     my $file2 = "$dir/moreTestParameters.dat";
     open(FH, ">$file2") || die "cannot open $file2\n";
@@ -699,11 +694,9 @@ rundaqtrg           button
 daqseconds          5
 rundaqseconds       button
 
-
 EOF
 
 close(FH);
-
 
 }
 
@@ -744,7 +737,6 @@ sub printTrimParameters {
 
 }
 
-
 # ----------------------------------------------------------------------
 sub printDacParameters {
     for ($iroc = 0; $iroc < $nrocs; $iroc++) {
@@ -766,7 +758,6 @@ sub printRbCal {
 	close(FH);
     }
 
-
 }
 
 # ----------------------------------------------------------------------
@@ -785,8 +776,6 @@ sub printTbmParameters {
     }
 
 }
-
-
 
 # ----------------------------------------------------------------------
 sub printTestPatterns {
