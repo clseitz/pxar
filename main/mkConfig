@@ -486,7 +486,7 @@ Ntrig               5
 SaveDacs            button
 
 -- PixelAlive
-Ntrig               10
+Ntrig               20
 Vcal                200
 aliveTest           button
 maskTest            button
@@ -496,7 +496,7 @@ addressDecodingTest button
 PHmap               checkbox(1)
 AllPixels           checkbox(0)
 Unmasked            checkbox(0)
-Ntrig               10
+Ntrig               16
 DAC                 vcal
 DACLO               0
 DACHI               255
@@ -504,7 +504,7 @@ PIX                 11,20
 
 -- DacDacScan
 PHmap               checkbox
-Ntrig               10
+Ntrig               16
 DAC1                caldel
 DAC1LO              0
 DAC1HI              255
@@ -516,11 +516,11 @@ PIX                 11,20
 -- BB
 dumpAll             checkbox(0)
 dumpProblematic     checkbox(0)
-Ntrig               5
+Ntrig               16
 vcals               250
 
 -- BB2
-Ntrig               10
+Ntrig               16
 vcals               222
 Plwidth             35
 PIX                 11,20
@@ -537,10 +537,10 @@ useCalVa            checkbox(0)
 setVana             button
 
 -- IV
-port                /dev/FIXME
+port                /dev/ttyUSB0
 voltageStart        0
-voltageStop         600
-voltageStep         5
+voltageStop         300
+voltageStep         10
 delay               1
 compliance(ua)      100
 
@@ -565,7 +565,7 @@ adjustvcal          checkbox(1)
 dumpAll             checkbox(0)
 dumpProblematic     checkbox(0)
 dumpOutputFile      checkbox(0)
-Ntrig               50
+Ntrig               16
 DAC                 VthrComp
 DacLo               0
 DacHi               200
@@ -574,7 +574,7 @@ scurves             button
 
 -- Trim
 trim                button
-Ntrig               10
+Ntrig               16
 Vcal                35
 TrimBits            button
 
@@ -582,13 +582,13 @@ TrimBits            button
 showFits            checkbox(0)
 extended            checkbox(0)
 dumpHists           checkbox(0)
-Ntrig               10
+Ntrig               16
 measure             button
 fit                 button
 save                button
 
 -- PhOptimization
-ntrig               10
+ntrig               16
 safetymarginlow     20
 saturationvcal      100
 quantilesaturation  0.98
@@ -644,7 +644,7 @@ EOF
 -- Timing
 fastscan            checkbox(0)
 targetclk           4
-ntrig               10
+ntrig               16
 clocksdascan        button
 phasescan           button
 levelscan           button
