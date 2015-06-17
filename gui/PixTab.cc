@@ -40,16 +40,21 @@ PixTab::PixTab(PixGui *p, PixTest *test, string tabname) {
   fV1 = new TGVerticalFrame(fhFrame);
   fhFrame->AddFrame(fV1, new TGLayoutHints(kLHintsLeft | kLHintsExpandX | kLHintsExpandY, fBorderN, fBorderN, fBorderN, fBorderN));
   fV2 = new TGVerticalFrame(fhFrame);
-  fhFrame->AddFrame(fV2, new TGLayoutHints(kLHintsRight | kLHintsExpandX | kLHintsExpandY, fBorderN, fBorderN, fBorderN, fBorderN));
+  //DP fhFrame->AddFrame(fV2, new TGLayoutHints(kLHintsRight | kLHintsExpandX | kLHintsExpandY, fBorderN, fBorderN, fBorderN, fBorderN));
+  fhFrame->AddFrame(fV2, new TGLayoutHints(kLHintsRight | kLHintsExpandY, fBorderN, fBorderN, fBorderN, fBorderN)); // DP
 
   // -- fV1: create and add Embedded Canvas
-  fEc1 = new TRootEmbeddedCanvas(Form("%s", tabname.c_str()), fV1, 500, 500);
+  //DP fEc1 = new TRootEmbeddedCanvas(Form("%s", tabname.c_str()), fV1, 500, 500);
+  fEc1 = new TRootEmbeddedCanvas(Form("%s", tabname.c_str()), fV1, 700, 500); // DP
   fV1->AddFrame(fEc1, new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX | kLHintsExpandY, 1, 1, 1, 1));
-
 
   // -- status bar
   Int_t wid = fEc1->GetCanvasWindowId();  
   TCanvas *myc = new TCanvas(Form("%sCanvas", tabname.c_str()), 10, 10, wid);
+  myc->SetBottomMargin(0.10); // DP
+  myc->SetLeftMargin(0.12); // DP
+  myc->SetRightMargin(0.18); // DP
+
   fEc1->AdoptCanvas(myc);
   myc->Connect("ProcessedEvent(Int_t,Int_t,Int_t,TObject*)","PixTab",this, "statusBarUpdate(Int_t,Int_t,Int_t,TObject*)");
 

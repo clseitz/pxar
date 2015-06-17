@@ -16,6 +16,7 @@
 #include <TRint.h> 
 #include <TSystem.h>
 #include <TDatime.h>
+#include <TStyle.h> // DP
 
 #include "ConfigParameters.hh"
 #include "PixTestParameters.hh"
@@ -346,6 +347,7 @@ void runGui(PixSetup &a, int /*argc*/, char ** /*argv[]*/) {
 
   TApplication theApp("App", 0, 0);
   theApp.SetReturnFromRun(true);
+
   PixGui gui(gClient->GetRoot(), 1300, 800, &a);
   theApp.Run();
   LOG(logINFO) << "closing down 0 ";
