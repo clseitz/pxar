@@ -78,6 +78,7 @@ HVSupply::HVSupply(const string &portName, double timeout) {
 
   serial.setPortName(portName);
   serial.setBaudRate(9600);
+  serial.setTimeout(timeout); // DP
   serial.setFlowControl(false);
   serial.setParity(false);       //Uses no parity bit
   serial.setRemoveEcho(true);
@@ -96,17 +97,17 @@ HVSupply::HVSupply(const string &portName, double timeout) {
     serial.writeReadBack("S1", answer);
   }
   handleAnswers(answer, supplyTripped);
-  if(answer == "S1=ON") {
-    LOG(logCRITICAL) << "Devide did not return proper status code!";
-    throw UsbConnectionError("Devide did not return proper status code!");
+  if(answer == "S1=ON-DP") {
+    LOG(logCRITICAL) << "Device did not return proper status code!";
+    throw UsbConnectionError("Device did not return proper status code!");
   }
   LOG(logDEBUG) << "Communication initialized.";
 
-  hvOff();
+  //DP hvOff();
   mDelay(2000);
 }
 
-// Destructor: Will turn off the HV and terminate connection to the HV Power Supply device.
+// Destructor: turn off the HV and terminate connection to the HV device
 HVSupply::~HVSupply() {
   hvOff();
   mDelay(2000);
@@ -145,9 +146,9 @@ bool HVSupply::hvOff() {
 // Sets the desired voltage
 bool HVSupply::setVolts(double volts) {
   // Internally store voltage:
-  voltsCurrent = volts;
+  voltsCurrent = fabs(volts);
   // Only write to device if state machine indicates HV on:
-  if(hvIsOn) {
+  if( hvIsOn ) {
     LOG(logDEBUG) << "Setting HV to " << voltsCurrent << " V.";
     string command = "D1=" + to_string(voltsCurrent);
     string answer;
@@ -181,10 +182,10 @@ void HVSupply::getVoltsAmps(double &volts, double &amps){
   amps = getAmps();
 }
 
-
-// Enables Compliance mode and sets the current limit (to be given in uA, micro Ampere)
+// Enables Compliance mode and sets the current limit
+// (to be given in uA, micro Ampere)
 bool HVSupply::setMicroampsLimit(double microamps) {
-  if(microamps > 99) {
+  if(microamps > 999) { // DP
     LOG(logERROR) << "Current limit " << microamps << " uA too high."
 		  << " Device only delivers 50 uA.";
     return false;
@@ -202,7 +203,8 @@ bool HVSupply::setMicroampsLimit(double microamps) {
   return true;
 }
 
-// Reads back the set current limit in compliance mode. Value is given in uA (micro Ampere)
+// Reads back the set current limit in compliance mode.
+// Value is given in uA (micro Ampere)
 double HVSupply::getMicroampsLimit() {
   string answer;
   serial.writeReadBack("LS1", answer);
@@ -210,35 +212,58 @@ double HVSupply::getMicroampsLimit() {
   return outToDouble(answer)*1E6;
 }
 
-// ----------------------------------------------------------------------
+//------------------------------------------------------------------------------
 bool HVSupply::isTripped() {
 
   if(supplyTripped) return true;
   return false;
 }
 
-void HVSupply::sweepStart(double voltStart, double voltStop, double voltStep, double delay){
+//------------------------------------------------------------------------------
+void HVSupply::sweepStart(double voltStart, double voltStop, double voltStep,
+			  double delay)
+{
   this->voltStart = voltStart;
   this->voltStop = voltStop;
   this->voltStep = voltStep;
   this->delay = delay;
-  this->sweepReads = ceil(fabs((voltStart - voltStop) / voltStep));
+  this->sweepReads = ceil( fabs( (voltStart - voltStop) / voltStep ) ) + 1;
   this->currentSweepRead = 0;
+  LOG(logDEBUG) << "iseg HV sweep from " << voltStart
+		<< " to " << voltStop
+		<< " in " << this->sweepReads
+		<< " steps of " << voltStep;
   hvOn();
+  sweepIsRunning = 1;
 }
 
-bool HVSupply::sweepRunning(){
+//------------------------------------------------------------------------------
+bool HVSupply::sweepRunning()
+{
   return sweepIsRunning;
 }
 
-bool HVSupply::sweepRead(double &voltSet, double &voltRead, double &amps){
-  if(currentSweepRead >= sweepReads) return false;
+//------------------------------------------------------------------------------
+bool HVSupply::sweepRead(double &voltSet, double &voltRead, double &amps)
+{
+  if( currentSweepRead >= sweepReads ) return false;
   voltSet = voltStart + voltStep*currentSweepRead;
   setVolts(voltSet);
   usleep(delay * 1E6);
   getVoltsAmps(voltRead, amps);
-  currentSweepRead++;
-  if(currentSweepRead == sweepReads) hvOff(); //TODO: May need to ramp down voltage
+  getVoltsAmps(voltRead, amps);
+  getVoltsAmps(voltRead, amps);
+  getVoltsAmps(voltRead, amps);
+  getVoltsAmps(voltRead, amps); // multiple reads until stable
+  voltRead = fabs(voltRead); // DP
+  LOG(logDEBUG)
+    << "step " << currentSweepRead
+    << " read V " << voltRead << " current " << amps;
+  ++currentSweepRead;
+  if( currentSweepRead == sweepReads ) {
+    LOG(logDEBUG) << "done"; // DP
+    hvOff();
+    sweepIsRunning = 0;
+  }
   return false;// TODO: Make this return true if sweep was aborted
 }
-

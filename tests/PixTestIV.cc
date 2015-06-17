@@ -106,17 +106,17 @@ void PixTestIV::doTest() {
 
   fDirectory->cd();
   
-  int numMeasurements = ceil(fabs((fParVoltageStart - fParVoltageStop)/fParVoltageStep));
+  int numMeasurements = ceil(fabs((fParVoltageStart - fParVoltageStop)/fParVoltageStep)) + 1; // DP
   
   TH1D *h1(0);
   double vMin = min(fParVoltageStart, fParVoltageStop) - fParVoltageStep*.5;
   double vMax = vMin + numMeasurements*fParVoltageStep;
   h1 = bookTH1D("IVcurve", "IV curve", numMeasurements, vMin, vMax);
-  h1->SetMinimum(1.e-2);
+  //DP  h1->SetMinimum(1.e-2);
   h1->SetMarkerStyle(20);
   h1->SetMarkerSize(1.3);
   h1->SetStats(0.);
-  setTitles(h1, "-U [V]", "-I [uA]");
+  setTitles(h1, "U [V]", "I [uA]");
 
   vector<double> voltageMeasurements;
   vector<double> currentMeasurements;
@@ -124,22 +124,24 @@ void PixTestIV::doTest() {
   double signedStep = (fParVoltageStart < fParVoltageStop) ? fParVoltageStep
                                                            : -fParVoltageStep;
   PixTest::update();
-  if(gPad) gPad->SetLogy(true);
+  //DPif(gPad) gPad->SetLogy(true);
   
   LOG(logINFO) << "Starting IV curve measurement...";
-  double serialTimeout = (fParDelay > 1.0) ? fParDelay*5 : 5.0;
+  double serialTimeout = (fParDelay > 1.0) ? fParDelay*2 : 2.0; // DP
+
   pxar::HVSupply *hv = new pxar::HVSupply(fParPort.c_str(), serialTimeout);
+
   hv->setMicroampsLimit(fParCompliance);
 
-  hv->sweepStart(-fParVoltageStart,-fParVoltageStop,-signedStep,fParDelay);
+  hv->sweepStart(fParVoltageStart,fParVoltageStop,signedStep,fParDelay);
   bool aborted;
-  while(hv->sweepRunning()){
+  while( hv->sweepRunning() ) {
     double voltSet, voltRead, current;
     aborted = hv->sweepRead(voltSet, voltRead, current);
     voltageMeasurements.push_back(voltRead);
     currentMeasurements.push_back(current);
-    h1->Fill(-voltSet, -current*1E6);
-    
+    h1->Fill(voltSet, current*1E6);
+
     TTimeStamp ts;
     ts.Set();
     timeStamps.push_back(ts);
