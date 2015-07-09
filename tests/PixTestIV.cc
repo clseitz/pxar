@@ -127,7 +127,7 @@ void PixTestIV::doTest() {
   //DPif(gPad) gPad->SetLogy(true);
   
   LOG(logINFO) << "Starting IV curve measurement...";
-  double serialTimeout = (fParDelay > 1.0) ? fParDelay*2 : 2.0; // DP
+  double serialTimeout = (fParDelay > 1.0) ? fParDelay*1.2 : 1.2; // DP
 
   pxar::HVSupply *hv = new pxar::HVSupply(fParPort.c_str(), serialTimeout);
 

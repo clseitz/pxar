@@ -41,7 +41,7 @@ void createBackup(string a, string b);
 // ----------------------------------------------------------------------
 int main(int argc, char *argv[]){
   
-  LOG(logINFO) << "*** Welcome to pxar ***";
+  LOG(logINFO) << "=== Welcome to pxar ===";
   gSystem->Exec("git status");
 
   // -- command line arguments
@@ -153,8 +153,8 @@ int main(int argc, char *argv[]){
   TDatime today;
   string tstamp = Form("%d/%02d/%02d", today.GetYear(), today.GetMonth(), today.GetDay()); 
 
-  LOG(logINFO) << "*** Welcome to pxar ***";
-  LOG(logINFO) << Form("*** Today: %s", tstamp.c_str());
+  LOG(logINFO) << "=== Welcome to pxar ===";
+  LOG(logINFO) << Form("=== Today: %s", tstamp.c_str());
 
   vector<vector<pair<string,uint8_t> > >       rocDACs = configParameters->getRocDacs(); 
   vector<vector<pair<string,uint8_t> > >       tbmDACs = configParameters->getTbmDacs(); 
