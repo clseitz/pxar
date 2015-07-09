@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <TH1.h>
+#include <TStyle.h>
 
 #include "PixTestDacScan.hh"
 #include "PixUtil.hh"
@@ -138,6 +139,7 @@ void PixTestDacScan::doTest() {
   }
 
   fDirectory->cd();
+  gStyle->SetPalette(1);
   TH1D *h1(0);
   TH2D *h3(0);
   vector<TH1D*> vhist;
@@ -196,6 +198,7 @@ void PixTestDacScan::doTest() {
   if (fParAllPixels) {
     fApi->_dut->testAllPixels(true);
     fApi->_dut->maskAllPixels(false);
+    maskPixels();
 
     bool done = false;
     int cnt(0); 
@@ -305,7 +308,7 @@ void PixTestDacScan::doTest() {
     fDisplayedHist = (il);
   }
   PixTest::update(); 
-
+  dutCalibrateOff();
 }
 
 // ----------------------------------------------------------------------

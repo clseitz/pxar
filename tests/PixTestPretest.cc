@@ -2,6 +2,7 @@
 #include <stdlib.h>  
 #include <algorithm> 
 
+#include <TColor.h>
 #include <TStyle.h>
 #include <TMarker.h>
 #include <TStopwatch.h>
@@ -225,6 +226,7 @@ void PixTestPretest::setVana() {
   banner(Form("PixTestPretest::setVana() target Ia = %d mA/ROC", fTargetIa)); 
 
   fApi->_dut->testAllPixels(false);
+  fApi->_dut->maskAllPixels(true);
 
   vector<uint8_t> vanaStart;
   vector<double> rocIana;
@@ -361,6 +363,7 @@ void PixTestPretest::setVana() {
 
   LOG(logINFO) << "PixTestPretest::setVana() done, Module Ia " << ia16 << " mA = " << ia16/nRocs << " mA/ROC";
 
+  dutCalibrateOff();
 }
 
 // ----------------------------------------------------------------------
@@ -372,7 +375,7 @@ void PixTestPretest::setTimings() {
   banner(Form("PixTestPreTest::setTimings()"));
   fApi->_dut->testAllPixels(false);
   fApi->_dut->maskAllPixels(true);
-
+  
   TLogLevel UserReportingLevel = Log::ReportingLevel();
   int nTBMs = (fApi->_dut->getTbmType() == "tbm09") ? 4 : 2;
   if (fApi->_dut->getNTbms() == 0) nTBMs = 0; // reset the above if no TBM is present
@@ -457,12 +460,14 @@ void PixTestPretest::setTimings() {
   LOG(logINFO) << "Test took " << t << " ms.";
   LOG(logINFO) << "PixTestPretest::setTimings() done.";
 
+  dutCalibrateOff();
 }
 
 // ----------------------------------------------------------------------
 void PixTestPretest::setVthrCompCalDel() {
   uint16_t FLAGS = FLAG_FORCE_MASKED;
 
+  gStyle->SetPalette(1);
   cacheDacs();
   fDirectory->cd();
   PixTest::update(); 
@@ -576,7 +581,6 @@ void PixTestPretest::setVthrCompCalDel() {
     
     h2->Draw(getHistOption(h2).c_str());
     PixTest::update(); 
-    pxar::mDelay(500); 
     
     fHistList.push_back(h2); 
   }
@@ -604,6 +608,7 @@ void PixTestPretest::setVthrCompCalDel() {
   LOG(logINFO) << "CalDel:   " << caldelString;
   LOG(logINFO) << "VthrComp: " << vthrcompString;
 
+  dutCalibrateOff();
 }
 
 
@@ -633,6 +638,8 @@ void PixTestPretest::setVthrCompId() {
   }
 
   fApi->_dut->testAllPixels(true); // enable all pix: more noise
+  fApi->_dut->maskAllPixels(false); // enable all pix: more noise
+  maskPixels(); 
 
   for (int roc = 0; roc < nRocs; ++roc) {
     fApi->setDAC("Vsf", 33, roc); // small
@@ -725,6 +732,7 @@ void PixTestPretest::setVthrCompId() {
 
   LOG(logINFO) << "PixTestPretest::setVthrCompId() done";
 
+  dutCalibrateOff();
 }
 
 
@@ -855,6 +863,7 @@ void PixTestPretest::setCalDel() {
   hsum->Draw();
   PixTest::update();
   fDisplayedHist = find(fHistList.begin(), fHistList.end(), hsum);
+  dutCalibrateOff();
 }
 
 // ----------------------------------------------------------------------
@@ -863,6 +872,9 @@ void PixTestPretest::programROC() {
   fDirectory->cd();
   PixTest::update(); 
   banner(Form("PixTestPretest::programROC() ")); 
+
+  fApi->_dut->testAllPixels(false);
+  fApi->_dut->maskAllPixels(true);
   
   vector<uint8_t> rocIds = fApi->_dut->getEnabledRocIDs(); 
   unsigned int nRocs = rocIds.size();
@@ -916,6 +928,7 @@ void PixTestPretest::programROC() {
   fDisplayedHist = find(fHistList.begin(), fHistList.end(), h1);
   PixTest::update(); 
 
+  dutCalibrateOff();  
   restoreDacs();
 }
 
@@ -923,6 +936,7 @@ void PixTestPretest::programROC() {
 // ----------------------------------------------------------------------
 void PixTestPretest::findWorkingPixel() {
 
+  gStyle->SetPalette(1);
   cacheDacs();
   fDirectory->cd();
   PixTest::update(); 
@@ -990,7 +1004,7 @@ void PixTestPretest::findWorkingPixel() {
       int idac2 = w.first;
       vector<pixel> wpix = w.second;
       for (unsigned ipix = 0; ipix < wpix.size(); ++ipix) {
-	hname = Form("fwp_c%d_r%d_C%d", ic, ir, rocIds[wpix[ipix].roc()]);
+	hname = Form("fwp_c%d_r%d_C%d", ic, ir, wpix[ipix].roc());
 	if (maps.count(hname) > 0) {
 	  maps[hname]->Fill(idac1, idac2, wpix[ipix].value()); 
 	} else {
@@ -1060,10 +1074,7 @@ void PixTestPretest::findWorkingPixel() {
   fPIX.push_back(make_pair(ic, ir));
   addSelectedPixels(Form("%d,%d", ic, ir)); 
 
-  
-  fApi->_dut->testAllPixels(true);
-  fApi->_dut->maskAllPixels(false);
-  
+  dutCalibrateOff();  
   restoreDacs();
 
 }

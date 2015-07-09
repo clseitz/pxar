@@ -7,6 +7,7 @@
 #include <TArrow.h>
 #include <TSpectrum.h>
 #include "TStopwatch.h"
+#include "TStyle.h"
 
 #include "PixTestBBMap.hh"
 #include "PixUtil.hh"
@@ -101,6 +102,7 @@ void PixTestBBMap::doTest() {
 
   TStopwatch t;
 
+  gStyle->SetPalette(1);
   cacheDacs();
   PixTest::update();
   bigBanner(Form("PixTestBBMap::doTest() Ntrig = %d, VcalS = %d (high range)", fParNtrig, fParVcalS));
@@ -109,6 +111,7 @@ void PixTestBBMap::doTest() {
 
   fApi->_dut->testAllPixels(true);
   fApi->_dut->maskAllPixels(false);
+  maskPixels();
 
   int flag(FLAG_CALS);
   fApi->setDAC("ctrlreg", 4);     // high range
@@ -173,6 +176,7 @@ void PixTestBBMap::doTest() {
 	       << ", duration: " << seconds << " seconds";
   LOG(logINFO) << "number of dead bumps (per ROC): " << bbString;
   LOG(logINFO) << "separation cut       (per ROC): " << bbCuts;
+  dutCalibrateOff();
 
 }
 

@@ -48,6 +48,8 @@ typedef struct {
 } TreeEvent;
 
 
+bool sortRocHist(const TH1*, const TH1*); 
+
 ///
 /// PixTest
 /// =======
@@ -145,17 +147,14 @@ public:
   /// list.
   std::vector<std::pair<int,int> > checkHotPixels(TH2D* h);
 
-
-//   /// Return pixelAlive map and additional hit map when running with external source
-//   std::pair<std::vector<TH2D*>,std::vector<TH2D*> > xEfficiencyMaps(std::string name, uint16_t ntrig, 
-// 								    uint16_t FLAGS = FLAG_CHECK_ORDER | FLAG_FORCE_UNMASKED);
-
-//   std::pair<std::vector<TH2D*>,std::vector<TH2D*> > xNoiseMaps(std::string name, uint16_t ntrig, 
-// 							       int daclo = 0, int dachi = 255, int dacsperstep = -1, 
-// 							       int result = 15, uint16_t FLAGS = FLAG_CHECK_ORDER | FLAG_FORCE_UNMASKED);
-
   /// provide access to noiseMaps when (FLAG_CHECK_ORDER | FLAG_FORCE_UNMASKED) was set
   std::vector<TH2D*> getXrayMaps() {return fXrayMaps;}
+
+  /// enable cal-injects for all pixels on DUT except those mentioned in the mask file
+  void dutCalibrateOn();
+
+  /// disable cal-injects for all pixels on DUT with subsequent call to maskPixels()
+  void dutCalibrateOff();
   
   /// determine hot pixels with high occupancy
   void maskHotPixels(std::vector<TH2D*>); 
@@ -183,9 +182,6 @@ public:
   void fillDacHist(std::vector<std::pair<uint8_t, std::vector<pxar::pixel> > > &results, TH1D *h, 
 		   int icol = -1, int irow = -1, int iroc = -1); 
 
-  /// select some pattern of pixels if not enabling the complete ROC. Enables the complete ROC if npix > 999
-  virtual void sparseRoc(int npix = 8);
-
   /// creates a 1D distribution of a map
   TH1D* distribution(TH2D *, int nbins, double xmin, double xmax); 
   /// fit an s-curve to a distribution. Fills fThreshold, fThresholdE, fSigma, fSigmaE
@@ -203,6 +199,8 @@ public:
   /// return a list of TH* that have 'name' as part to their histogram name
   std::vector<TH1*> mapsWithString(std::vector<TH1*>, std::string name);
   std::vector<TH2D*> mapsWithString(std::vector<TH2D*>, std::string name);
+  /// return a list of TH2D* from fHistList
+  std::vector<TH2D*> mapsWithString(std::string name);
 
   /// produce eye-catching printouts
   void print(std::string, pxar::TLogLevel log = pxar::logINFO); 
@@ -337,6 +335,9 @@ protected:
   bool                  fProblem;
 
   std::vector<TH2D*>    fXrayMaps; 
+
+  int                   fTriStateColors[3]; 
+
 
   // -- data members for DAQ purposes
   std::vector<std::pair<std::string, uint8_t> > fPg_setup;
