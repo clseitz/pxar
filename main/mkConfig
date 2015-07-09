@@ -536,7 +536,7 @@ setVana             button
 
 -- IV
 port                /dev/ttyUSB0
-voltageStart        0
+voltageStart        10
 voltageStop         300
 voltageStep         10
 delay               1
