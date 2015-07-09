@@ -319,8 +319,9 @@ bool RS232Conn::readData(string &data){
       tStart = time(NULL);
     }
     tCurr = time(NULL);
-    if (difftime(tCurr,tStart) > timeout){
-      LOG(logCRITICAL) << "[RS232] Serial Timeout";
+    if (difftime(tCurr,tStart) > timeout){ // DP: increasing limit does not help
+      LOG(logCRITICAL) << "[RS232] Serial Timeout from "
+		       << tStart << " to " << tCurr << " status " << status;
       readingStatus = TIMEOUT;
       break;
     }
