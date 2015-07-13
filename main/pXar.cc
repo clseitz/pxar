@@ -348,6 +348,42 @@ void runGui(PixSetup &a, int /*argc*/, char ** /*argv[]*/) {
   TApplication theApp("App", 0, 0);
   theApp.SetReturnFromRun(true);
 
+  //DP:
+
+  gStyle->SetTitleBorderSize(0); // no frame around global title
+  gStyle->SetTitleFont( 62, "t" );
+  gStyle->SetTitleFontSize( 0.03 ); // global title
+  gStyle->SetTitleX( 0.36 ); // global title
+  gStyle->SetTitleY( 0.98 ); // global title
+
+  gStyle->SetTickLength( -0.02, "x" ); // tick marks outside
+  gStyle->SetTickLength( -0.02, "y");
+  gStyle->SetTickLength( -0.01, "z");
+
+  gStyle->SetLabelFont( 62, "XYZ" );
+
+  gStyle->SetLabelOffset( 0.022, "xyz" );
+
+  gStyle->SetTitleFont( 62, "XYZ" );
+
+  gStyle->SetTitleOffset( 1.3, "x" );
+  gStyle->SetTitleOffset( 1.6, "y" );
+  gStyle->SetTitleOffset( 1.7, "z" );
+
+  gStyle->SetLineWidth(1);// frames
+  gStyle->SetHistLineColor(4); // 4=blau
+  gStyle->SetHistLineWidth(3);
+  gStyle->SetHistFillColor(5); // 5=gelb
+  gStyle->SetHistFillStyle(1001); // 1001 = solid
+
+  gStyle->SetFrameLineWidth(2);
+
+  gStyle->SetPalette(1); // rainbow colors
+
+  gStyle->SetOptDate();
+
+  gStyle->SetHistMinimumZero(); // no zero suppression
+
   PixGui gui(gClient->GetRoot(), 1300, 800, &a);
   theApp.Run();
   LOG(logINFO) << "closing down 0 ";
