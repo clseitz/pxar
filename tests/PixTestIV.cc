@@ -187,8 +187,8 @@ void PixTestIV::writeOutput(vector<double>       &voltageMeasurements,
   
   unsigned int numMeasurements = voltageMeasurements.size();
   for (unsigned int i = 0; i < numMeasurements; i++) {
-    OutputFile << Form("%+8.3f\t%+e\t%s", voltageMeasurements[i],
-                                          currentMeasurements[i],
+    OutputFile << Form("%+8.3f\t%+e\t%s", -1*voltageMeasurements[i],
+                                          -1*currentMeasurements[i],
                                           timeStamps[i].AsString("c"))
                << endl;
   }
