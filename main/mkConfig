@@ -566,10 +566,10 @@ vcals               250
 
 -- BB2
 Ntrig               16
-vcals               222
+vcals               255
 Plwidth             35
 PIX                 11,20
-targetIa            24
+targetIa            30
 
 -- BB3
 dumpAll             checkbox(0)
