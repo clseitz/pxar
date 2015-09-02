@@ -546,7 +546,7 @@ Ntrig               5
 SaveDacs            button
 
 -- PixelAlive
-Ntrig               20
+Ntrig               10
 Vcal                200
 aliveTest           button
 maskTest            button
