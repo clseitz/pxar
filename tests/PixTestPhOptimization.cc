@@ -348,7 +348,6 @@ void PixTestPhOptimization::GetMaxPhPixel(map<int, pxar::pixel > &maxpixels,   s
     int colMargin = 3;
     int rowMargin = 5; 
     bool pix_found = false;
-    bool badpix = false;
     //first, pixel search excludes edges (col(row)Margin cols (rows) per side)
     for(int ibinx = 1 + colMargin; ibinx < maxphmap[ith2]->GetNbinsX()+1-colMargin; ibinx++){
       if(pix_found) break;
@@ -360,6 +359,7 @@ void PixTestPhOptimization::GetMaxPhPixel(map<int, pxar::pixel > &maxpixels,   s
 	  temp_pix.setRoc( getIdFromIdx(ith2) );
 	  temp_pix.setRow( ibiny - 1 );
 	  temp_pix.setColumn( ibinx - 1 );
+	  bool badpix = false; // DP: must be inside loops
 	  for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	    if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 	      badpix=true;
@@ -377,7 +377,6 @@ void PixTestPhOptimization::GetMaxPhPixel(map<int, pxar::pixel > &maxpixels,   s
     }
     //if not found, look outside fiducial region
     if(!pix_found){
-      badpix=false;
       LOG(logDEBUG)<<"Search for maxph pixel failed in the fiducial region on chip "<< (int)getIdFromIdx(ith2)<<", looking at the edges";
       for(int ibinx_ex = maxphmap[ith2]->GetNbinsX()+1-colMargin; ibinx_ex < maxphmap[ith2]->GetNbinsX()+1+colMargin; ibinx_ex++){
 	if(pix_found) break;
@@ -389,6 +388,7 @@ void PixTestPhOptimization::GetMaxPhPixel(map<int, pxar::pixel > &maxpixels,   s
 	    temp_pix.setRoc( getIdFromIdx(ith2) );
 	    temp_pix.setRow( ibiny - 1 );
 	    temp_pix.setColumn( ibinx - 1 );
+	    bool badpix = false; // DP: must be inside loops
 	    for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	      if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 		badpix=true;
@@ -503,7 +503,6 @@ void PixTestPhOptimization::GetMinPhPixel(map<int, pxar::pixel > &minpixels, map
     int colMargin = 3;
     int rowMargin = 5; 
     bool pix_found = false;
-    bool badpix = false;
     //first, pixel search excludes edges (col(row)Margin cols (rows) per side)
     for(int ibinx = 1 + colMargin; ibinx < minphmap[ith2]->GetNbinsX()+1-colMargin; ibinx++){
       if(pix_found) break;
@@ -515,6 +514,7 @@ void PixTestPhOptimization::GetMinPhPixel(map<int, pxar::pixel > &minpixels, map
 	  temp_pix.setRoc( getIdFromIdx(ith2) );
 	  temp_pix.setRow( ibiny - 1 );
 	  temp_pix.setColumn( ibinx - 1 );
+	  bool badpix = false; // DP: must be inside loops
 	  for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	    if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 	      badpix=true;
@@ -533,7 +533,6 @@ void PixTestPhOptimization::GetMinPhPixel(map<int, pxar::pixel > &minpixels, map
     
     //if not found, look outside fiducial region
     if(!pix_found){
-      badpix = false;
       LOG(logDEBUG)<<"Search for minph pixel failed in the fiducial region for chip "<< (int)getIdFromIdx(ith2)<<", looking at the edges";
       for(int ibinx_ex = minphmap[ith2]->GetNbinsX()+1-colMargin; ibinx_ex < minphmap[ith2]->GetNbinsX()+1+colMargin; ibinx_ex++){
 	if(pix_found) break;
@@ -545,6 +544,7 @@ void PixTestPhOptimization::GetMinPhPixel(map<int, pxar::pixel > &minpixels, map
 	    temp_pix.setRoc( getIdFromIdx(ith2) );
 	    temp_pix.setRow( ibiny - 1 );
 	    temp_pix.setColumn( ibinx - 1 );
+	    bool badpix = false; // DP: must be inside loops
 	    for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	      if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 		badpix=true;
