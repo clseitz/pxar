@@ -655,7 +655,7 @@ scurves             button
 
 -- Trim
 trim                button
-Ntrig               20
+Ntrig               8
 Vcal                35
 TrimBits            button
 
