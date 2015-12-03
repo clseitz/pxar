@@ -360,7 +360,6 @@ void PixTestPhOptimization::GetMaxPhPixel(map<int, pxar::pixel > &maxpixels,   s
 	  temp_pix.setRoc( getIdFromIdx(ith2) );
 	  temp_pix.setRow( ibiny - 1 );
 	  temp_pix.setColumn( ibinx - 1 );
-	  bool badpix = false; // DP: must be inside loops
 	  for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	    if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 	      badpix=true;
@@ -390,7 +389,6 @@ void PixTestPhOptimization::GetMaxPhPixel(map<int, pxar::pixel > &maxpixels,   s
 	    temp_pix.setRoc( getIdFromIdx(ith2) );
 	    temp_pix.setRow( ibiny - 1 );
 	    temp_pix.setColumn( ibinx - 1 );
-	    bool badpix = false; // DP: must be inside loops
 	    for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	      if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 		badpix=true;
@@ -517,7 +515,6 @@ void PixTestPhOptimization::GetMinPhPixel(map<int, pxar::pixel > &minpixels, map
 	  temp_pix.setRoc( getIdFromIdx(ith2) );
 	  temp_pix.setRow( ibiny - 1 );
 	  temp_pix.setColumn( ibinx - 1 );
-	  bool badpix = false; // DP: must be inside loops
 	  for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	    if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 	      badpix=true;
@@ -548,7 +545,6 @@ void PixTestPhOptimization::GetMinPhPixel(map<int, pxar::pixel > &minpixels, map
 	    temp_pix.setRoc( getIdFromIdx(ith2) );
 	    temp_pix.setRow( ibiny - 1 );
 	    temp_pix.setColumn( ibinx - 1 );
-	    bool badpix = false; // DP: must be inside loops
 	    for(std::vector<std::pair<uint8_t, pair<int, int> > >::iterator bad_it = badPixels.begin(); bad_it != badPixels.end(); bad_it++){
 	      if(bad_it->second.first == ibinx && bad_it->second.second == ibiny && bad_it->first == getIdFromIdx(ith2)){
 		badpix=true;
